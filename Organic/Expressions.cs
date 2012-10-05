@@ -222,6 +222,8 @@ namespace Organic
                 }
                 else // Defined value or error
                 {
+                    if (value.StartsWith("."))
+                        value = PriorGlobalLabel.ToLower() + "_" + value.Substring(1);
                     if (Values.ContainsKey(value.ToLower()))
                         expressionResult.Value = Values[value.ToLower()];
                     else if (LabelValues.ContainsKey(value.ToLower()))

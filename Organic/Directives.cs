@@ -114,12 +114,15 @@ namespace Organic
                 }
                 else if (directive.ToLower().StartsWith("scope"))
                 {
-                    if (parameters.Length == 0)
+                    if (parameters.Length < 2)
                         output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.InsufficientParamters));
-                    else if (parameters.Length > 1)
+                    else if (parameters.Length > 2)
                         output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.TooManyParamters));
                     else
-                        PriorGlobalLabel = parameters[0];
+                    {
+                        PriorGlobalLabel = parameters[1];
+                        output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+                    }
                 }
                 else if (directive.ToLower().StartsWith("echo"))
                 {
