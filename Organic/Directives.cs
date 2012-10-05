@@ -96,14 +96,8 @@ namespace Organic
                             }
                             else
                             {
-                                ExpressionResult value = ParseExpression(data.Trim());
-                                if (!value.Successful)
-                                {
-                                    postponedExpressions.Add((ushort)binOutput.Count, data.Trim());
-                                    binOutput.Add(0);
-                                }
-                                else
-                                    binOutput.Add(value.Value);
+                                postponedExpressions.Add((ushort)binOutput.Count, data.Trim());
+                                binOutput.Add(0);
                             }
                         }
                         output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), binOutput.ToArray(), currentAddress, !noList));
