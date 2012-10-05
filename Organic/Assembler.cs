@@ -20,6 +20,7 @@ namespace Organic
         public Stack<string> FileNames;
         // Suspended line counts are the number of lines that should be considered the same line, for instance, upon expanding a macro
         public Stack<int> LineNumbers, SuspendedLineCounts;
+        public Stack<string> WorkingDirectories; 
         public Dictionary<string, byte> OpcodeTable;
         public Dictionary<string, byte> NonBasicOpcodeTable;
         public Dictionary<string, byte> ValueTable;
@@ -67,6 +68,7 @@ namespace Organic
             NonBasicOpcodeTable = new Dictionary<string, byte>();
             ValueTable = new Dictionary<string, byte>();
             IfStack = new Stack<bool>();
+            WorkingDirectories = new Stack<string>();
             noList = false;
 
             LoadTable();
@@ -313,6 +315,12 @@ namespace Organic
                                     Array.Copy(lines, i + 1, newLines, i + newSource.Length + 1, lines.Length - i - 1);
                                 lines = newLines;
                             }
+                            WorkingDirectories.Push(Directory.GetCurrentDirectory());
+                            if (Path.IsPathRooted(includedFileName))
+                                Directory.SetCurrentDirectory(GetDirectory(includedFileName));
+                            else
+                                Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(),
+                                    GetDirectory(includedFileName)));
                             FileNames.Push(includedFileName);
                             LineNumbers.Push(1);
                             i--;
@@ -414,6 +422,7 @@ namespace Organic
                             continue;
                         FileNames.Pop();
                         LineNumbers.Pop();
+                        Directory.SetCurrentDirectory(WorkingDirectories.Pop());
                     }
                     else if (line.StartsWith(".macro") && !noList)
                     {
@@ -662,6 +671,17 @@ namespace Organic
                 }
             }
             return EvaluateAssembly(output);
+        }
+
+        private string GetDirectory(string filePath)
+        {
+            int forward = filePath.LastIndexOf('/');
+            int backward = filePath.LastIndexOf('\\');
+            if (forward == -1 && backward == -1)
+                return ".";
+            if (forward < backward)
+                return filePath.Remove(backward);
+            return filePath.Remove(forward);
         }
 
         private List<ListEntry> EvaluateAssembly(List<ListEntry> output)
