@@ -32,6 +32,7 @@ namespace Organic
         public bool ForceLongLiterals = false;
         private List<ushort> RelocatedAddresses { get; set; }
         private int TableInsertionIndex { get; set; }
+        private int RootLineNumber { get; set; }
         private ushort OldAddress { get; set; }
         private int RelocationGroup { get; set; }
         public bool IsRelocating { get; set; }
@@ -140,6 +141,7 @@ namespace Organic
             LineNumbers = new Stack<int>();
             FileNames.Push(FileName);
             LineNumbers.Push(0);
+            RootLineNumber = 0;
             IfStack.Push(true);
 
             // Pass one
@@ -148,7 +150,10 @@ namespace Organic
             for (int i = 0; i < lines.Length; i++)
             {
                 if (SuspendedLineCounts.Count == 0)
+                {
                     LineNumbers.Push(LineNumbers.Pop() + 1);
+                    RootLineNumber++;
+                }
                 else
                 {
                     int count = SuspendedLineCounts.Pop();
@@ -174,9 +179,7 @@ namespace Organic
                     continue;
                 }
                 ListEntry listEntry = new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, !noList);
-                listEntry.RootLineNumber = 0;
-                foreach (var num in LineNumbers)
-                    listEntry.RootLineNumber += num;
+                listEntry.RootLineNumber = RootLineNumber;
                 if (HandleCodeLine != null)
                 {
                     HandleCodeEventArgs args = new HandleCodeEventArgs();
@@ -422,6 +425,7 @@ namespace Organic
                             continue;
                         FileNames.Pop();
                         LineNumbers.Pop();
+                        RootLineNumber--;
                         Directory.SetCurrentDirectory(WorkingDirectories.Pop());
                     }
                     else if (line.StartsWith(".macro") && !noList)
@@ -808,21 +812,21 @@ namespace Organic
                                         if (valueBResult.HasValue)
                                             output[i].Output = output[i].Output.Concat(new ushort[] { valueBResult.Value }).ToArray();
                                         // if the size of the instruction has changed
-                                        int lineNumber = output[i].LineNumber;
+                                        int lineNumber = output[i].RootLineNumber;
                                         int maxLineNumber = int.MaxValue;
                                         for (; i < output.Count; i++)
                                         {
                                             if (output[i].Code.StartsWith(".org") || output[i].Code.StartsWith("#org"))
                                             {
-                                                maxLineNumber = output[i].LineNumber;
+                                                maxLineNumber = output[i].RootLineNumber;
                                                 break;
                                             }
-                                            if (output[i].LineNumber > lineNumber)
+                                            if (output[i].RootLineNumber > lineNumber)
                                                 output[i].Address--;
                                         }
                                         foreach (Label l in LabelValues)
                                         {
-                                            if (l.LineNumber > lineNumber && l.LineNumber < maxLineNumber)
+                                            if (l.RootLineNumber >= lineNumber && l.RootLineNumber <= maxLineNumber)
                                                 l.Address--;
                                         }
                                         break;
