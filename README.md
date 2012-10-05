@@ -263,6 +263,8 @@ Organic offers several pre-processor directives to ease use.  These may be used 
 
 **.reserve \[amount]**: Inserts [amount] of words into the output.  Each word is zero.
 
+**.scope \[value]**: Sets the last label name without creating a label, for local labels.
+
 **.shortform**: Forces Organic to use short-form literals when possible from that point forward.
 
 Plugins

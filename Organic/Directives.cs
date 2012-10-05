@@ -112,6 +112,15 @@ namespace Organic
                             currentAddress += (ushort)binOutput.Count;
                     }
                 }
+                else if (directive.ToLower().StartsWith("scope"))
+                {
+                    if (parameters.Length == 0)
+                        output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.InsufficientParamters));
+                    else if (parameters.Length > 1)
+                        output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.TooManyParamters));
+                    else
+                        PriorGlobalLabel = parameters[0];
+                }
                 else if (directive.ToLower().StartsWith("echo"))
                 {
                     if (parameters.Length == 1)
