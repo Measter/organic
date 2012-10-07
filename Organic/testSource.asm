@@ -4,6 +4,7 @@
     ; .align    1
 :fib
     SUB SP, 0x6
+    #include "test.dasm"
     SET PICK 0x5, A
     SET PICK 0x4, 0x1
     SET PICK 0x3, 0x1

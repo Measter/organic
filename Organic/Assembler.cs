@@ -325,7 +325,7 @@ namespace Organic
                                 Directory.SetCurrentDirectory(Path.Combine(Directory.GetCurrentDirectory(),
                                     GetDirectory(includedFileName)));
                             FileNames.Push(includedFileName);
-                            LineNumbers.Push(1);
+                            LineNumbers.Push(0);
                             i--;
                             continue;
                         }
