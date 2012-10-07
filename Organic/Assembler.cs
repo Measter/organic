@@ -722,7 +722,10 @@ namespace Organic
                     }
                     if (output[i].CodeType == CodeType.Label && !output[i].Code.StartsWith("."))
                     {
-                        PriorGlobalLabel = output[i].Code.Remove(output[i].Code.Length - 1);
+                        if (output[i].Code.StartsWith(":"))
+                            output[i].Code = output[i].Code.Substring(1) + ":";
+                        if (!output[i].Code.StartsWith("."))
+                            PriorGlobalLabel = output[i].Code.Remove(output[i].Code.Length - 1);
                     }
                     if (output[i].Code.ToLower() == ".longform" || output[i].Code.ToLower() == "#longform")
                     {
