@@ -1,7 +1,7 @@
 Organic Assembler
 =================
 
-[![Download latest version](http://i.imgur.com/nQjlC.png)](https://github.com/SirCmpwn/organic/downloads)
+[![Download latest version](http://i.imgur.com/J3ic8.png)](https://github.com/SirCmpwn/organic/downloads)
 
 Organic is an assembler for the DCPU-16 architecture.  It supports version 1.7 of the [DCPU specification](http://pastebin.com/raw.php?i=Q4JvQvnM).  Organic also supports a number of advanced features, such as equates, relative addressing, macros, and expression evalulation.  It also runs on Windows, Linux, and Intel Macs (you may have limited success with PowerPC Macs).
 
