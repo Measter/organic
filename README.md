@@ -198,7 +198,7 @@ If you prepend a label with ".", that label will have the name of the previous g
         SET A, C
     .label: ; becomes label2_label
 
-Note that this also works with Notch-style labels, so ":.label" is a local label.  Also permitted is "_label", in accordance with the 0x10c standards committee.
+Note that this also works with Notch-style labels, so ":.label" is a local label.
 
 ### Relocatable Code
 
