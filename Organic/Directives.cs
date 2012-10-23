@@ -148,7 +148,7 @@ namespace Organic
                                 if (!value.Successful)
                                     output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.IllegalExpression));
                                 else
-                                    consoleOutput += "0x" + value.Value;
+                                    consoleOutput += value.Value;
                             }
                         }
                         Console.Write(consoleOutput + "\n");
