@@ -1,10 +1,8 @@
-Organic Assembler
-=================
+# Organic Assembler
 
 Organic is an assembler for the DCPU-16 architecture.  It supports version 1.7 of the [DCPU specification](http://pastebin.com/raw.php?i=Q4JvQvnM).  Organic also supports a number of advanced features, such as equates, relative addressing, macros, and expression evalulation.  It also runs on Windows, Linux, and Intel Macs (you may have limited success with PowerPC Macs).
 
-Using Organic
--------------
+## Using Organic
 
 On Linux, make sure that you have "mono-complete" installed, and prepend any commands to run Organic with "mono", similar to running Java programs.
 
@@ -312,8 +310,7 @@ Your basic listing entry has several parts.  First, the name of the file.  After
 
 For .dat sections, the data is split up on different lines of a listing.  Each line is 8 words long.
 
-Compiling Organic
------------------
+## Compiling Organic
 
 **Windows**: "msbuild" from the root directory of the project.
 
@@ -321,12 +318,10 @@ Compiling Organic
 
 **Mac**: Install mono (I don't know how to do this on Mac).  "xbuild" from the root directory of the project.
 
-Using Organic as a Library
---------------------------
+## Using Organic as a Library
 
 Organic is coded as a library.  You can directly run the Main method to compile files from your program, or you can use the alternative route of using the Assemble method.  Add a reference to Organic.exe and you can use the Assemble method to get a List<ListEntry> from any given source code.  You can see the information contained in each ListEntry [here](https://github.com/SirCmpwn/Organic/blob/master/Organic/ListEntry.cs).  It contains the prettified code for that line, the file it's contained in, the line number, the ushort[] output, the error code, warning code, address, and whether or not that line is included in the listing.  If an expression was used in that line, you can access the result of that expression's evaluation.
 
-Getting Involved
-----------------
+## Getting Involved
 
 Feel free to fork and submit pull requests with your changes.  You'll have good results with small, focused pull requests, rather than broad, sweeping ones.  You can also submit issues for bugs or feature requests.  You may email me as well at sir@cmpwn.com.  If you need general help with DCPU-16 assembly, join #0x10c-dev on Freenode.
