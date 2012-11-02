@@ -614,6 +614,12 @@ namespace Organic
                                 valueA = MatchString(opcode.valueA, ValueTable);
                             if (opcode.valueB != null)
                                 valueB = MatchString(opcode.valueB, ValueTable);
+                            if (nonBasic == false && (opcode.valueA == null || opcode.valueB == null))
+                            {
+                                listEntry.ErrorCode = ErrorCode.InvalidOpcode;
+                                output.Add(listEntry);
+                                continue;
+                            }
                             if (valueA.value == valueB.value && valueA.value != 0x1E && valueB.value != 0x1E && opcode.value == 0x1)
                                 listEntry.WarningCode = WarningCode.RedundantStatement;
                             if (valueB.value == 0x1F && !opcode.match.Contains("IF"))
