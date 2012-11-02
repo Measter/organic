@@ -24,6 +24,7 @@ namespace Organic
             string inputFile = null;
             string outputFile = null;
             string listingFile = null;
+            string jsonFile = null;
             string pipe = null;
             string workingDirectory = Directory.GetCurrentDirectory();
             bool bigEndian = true, quiet = false, verbose = false;
@@ -83,6 +84,9 @@ namespace Organic
                             case "--pipe":
                             case "-p":
                                 pipe = args[++i];
+                                break;
+                            case "--json":
+                                jsonFile = args[++i];
                                 break;
                             case "--include":
                             case "-i":
@@ -231,6 +235,12 @@ namespace Organic
             if (listingFile != null || verbose)
                 listing = CreateListing(output);
 
+            string json = "";
+
+            if (jsonFile != null)
+                json = CreateJson(output);
+
+
             if (verbose)
                 Console.Write(listing);
             if (listingFile != null)
@@ -240,8 +250,55 @@ namespace Organic
                 writer.Close();
             }
 
+            if (jsonFile != null)
+            {
+                StreamWriter writer = new StreamWriter(jsonFile);
+                writer.Write(json);
+                writer.Close();
+            }
+
             TimeSpan duration = DateTime.Now - startTime;
             Console.WriteLine("Organic build complete " + duration.TotalMilliseconds + "ms");
+        }
+
+        private static string CreateJson(List<ListEntry> output)
+        {
+            // TODO: Should we just use a JSON library?
+            var builder = new StringBuilder();
+            builder.AppendLine("[");
+            const string indent = "    ";
+            foreach (var item in output)
+            {
+                builder.AppendLine(indent + "{");
+                builder.AppendLine(indent + indent + "\"type\":\"" + item.CodeType + "\",");
+                builder.AppendLine(indent + indent + "\"code\":\"" + item.Code.Replace("\"", "\\\"") + "\",");
+                builder.AppendLine(indent + indent + "\"file\":\"" + Path.GetFileName(item.FileName) + "\",");
+                builder.AppendLine(indent + indent + "\"line\":\"" + item.LineNumber + "\",");
+                builder.AppendLine(indent + indent + "\"address\":\"0x" + item.Address.ToString("X4") + "\",");
+                try
+                {
+                    if (item.CodeType == CodeType.BasicInstruction || item.CodeType == CodeType.NonBasicInstruction)
+                    {
+                        builder.AppendLine(indent + indent + "\"a\":\"" + item.ValueA.original + "\",");
+                        if (item.CodeType != CodeType.NonBasicInstruction)
+                            builder.AppendLine(indent + indent + "\"b\":\"" + item.ValueB.original + "\",");
+                    }
+                }
+                catch { }
+                if (item.Output != null && item.Output.Length != 0)
+                    builder.AppendLine(indent + indent + "\"output\":\"" + DumpArray(item.Output) + "\",");
+                if (item.ErrorCode != ErrorCode.Success)
+                    builder.AppendLine(indent + indent + "\"error\":\"" + item.ErrorCode + "\",");
+                else if (item.WarningCode != WarningCode.None)
+                    builder.AppendLine(indent + indent + "\"warning\":\"" + item.WarningCode + "\",");
+                builder.Length -= Environment.NewLine.Length + 1;
+                builder.AppendLine();
+                builder.AppendLine(indent + "},");
+            }
+            builder.Length -= Environment.NewLine.Length + 1;
+            builder.AppendLine();
+            builder.AppendLine("]");
+            return builder.ToString();
         }
 
         private static void ListPlugins(Assembler assembler)
@@ -401,6 +458,7 @@ namespace Organic
                 "--help: Displays this message.\n" +
                 "--input-file [filename]: An alternative way to specify the input file.\n" +
                 "--include [path]: Adds [path] to the search index for #include <> files.\n" +
+                "--json [filename]: Outputs a machine-readable JSON listing to [filename].\n" +
                 "--listing [filename]: Outputs a listing to [filename].\n" +
                 "--little-endian: Switches output to little-endian mode.\n" +
                 "--long-literals: Forces all literal values to take up an entire word.\n" + 

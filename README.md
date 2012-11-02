@@ -50,6 +50,10 @@ Retrieves information about the specified plugin.
 
 Installs [plugin name] from the [organic-plugins](https://github.com/SirCmpwn/Organic-Plugins) repository.
 
+**--json [output]**
+
+Outputs the results of assembly as JSON to \[output].
+
 **--listing [filename]**
 
 Specifies a file to output a code listing to.

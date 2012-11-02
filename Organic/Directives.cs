@@ -481,6 +481,7 @@ namespace Organic
                     output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.InvalidDirective));
                 }
             }
+            output[output.Count - 1].CodeType = CodeType.Directive;
         }
 
         #endregion

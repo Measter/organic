@@ -367,6 +367,7 @@ namespace Organic
                                     binOutput.Add(b);
                                 listEntry.Output = binOutput.ToArray();
                                 output.Add(listEntry);
+                                output[output.Count - 1].CodeType = CodeType.Directive;
                                 if (!noList)
                                     currentAddress += (ushort)binOutput.Count;
                             }
@@ -414,6 +415,7 @@ namespace Organic
                                 }
                                 listEntry.Output = binOutput.ToArray();
                                 output.Add(listEntry);
+                                output[output.Count - 1].CodeType = CodeType.Directive;
                                 if (!noList)
                                     currentAddress += (ushort)binOutput.Count;
                             }
@@ -506,9 +508,14 @@ namespace Organic
                         macro.Code = macro.Code.Trim('\n');
                         Macros.Add(macro);
                         output.Add(new ListEntry(".macro " + macroDefinition, FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+                        output[output.Count - 1].CodeType = CodeType.Directive;
                         foreach (var codeLine in macro.Code.Split('\n'))
+                        {
                             output.Add(new ListEntry(codeLine, FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+                            output[output.Count - 1].CodeType = CodeType.Directive;
+                        }
                         output.Add(new ListEntry(".endmacro", FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+                        output[output.Count - 1].CodeType = CodeType.Directive;
                     }
                     else
                     {
@@ -575,6 +582,7 @@ namespace Organic
                                     Array.Copy(lines, i + 1, newLines, i + macroCode.Length, lines.Length - i - 1);
                                 lines = newLines;
                                 output.Add(listEntry);
+                                output[output.Count - 1].CodeType = CodeType.Directive;
                                 line = lines[i].TrimComments().TrimExcessWhitespace();
                                 macroMatched = true;
                                 SuspendedLineCounts.Push(macroCode.Length); // Suspend the line counts for the expanded macro
