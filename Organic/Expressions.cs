@@ -29,14 +29,14 @@ namespace Organic
                 HandleExpression(this, heea);
                 value = heea.Expression;
             }
-            if (value.Contains("("))
+            if (value.SafeContains('('))
             {
                 // Check for advanced expression handlers
                 foreach (var item in ExpressionExtensions)
                 {
                     if (value.StartsWith(item.Key.ToLower() + "("))
                     {
-                        string expr = value.Substring(value.IndexOf("(") + 1);
+                        string expr = value.Substring(value.SafeIndexOf('(') + 1);
                         expr = expr.Remove(expr.Length - 1);
                         expressionResult.Value = item.Value(expr);
                         return expressionResult;
