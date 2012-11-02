@@ -4,6 +4,8 @@ Organic is an assembler for the DCPU-16 architecture.  It supports version 1.7 o
 
 ## Using Organic
 
+[![Download latest version](http://i.imgur.com/cMhpN.png)](https://github.com/SirCmpwn/organic/downloads)
+
 On Linux, make sure that you have "mono-complete" installed, and prepend any commands to run Organic with "mono", similar to running Java programs.
 
 ### Command Line Usage
@@ -100,8 +102,7 @@ Manually sets the working directory of Organic.
 
 Shorthand: -w
 
-Syntax
-------
+## Syntax
 
 Organic's assembly syntax is the same as notchan assembly.  Here's an example file:
 
@@ -195,7 +196,7 @@ If you prepend a label with ".", that label will have the name of the previous g
         SET A, C
     .label: ; becomes label2_label
 
-Note that this also works with Notch-style labels, so ":.label" is a local label.  Also permitted is "_label", in accordance with the 0x10c standards committee.
+Note that this also works with Notch-style labels, so ":.label" is a local label.
 
 ### Relocatable Code
 

@@ -148,7 +148,7 @@ namespace Organic
                                 if (!value.Successful)
                                     output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.IllegalExpression));
                                 else
-                                    consoleOutput += "0x" + value.Value.ToString("x").ToUpper();
+                                    consoleOutput += value.Value;
                             }
                         }
                         Console.Write(consoleOutput + "\n");
@@ -285,7 +285,9 @@ namespace Organic
                         else
                         {
                             currentAddress = value.Value;
-                            output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, !noList));
+                            var entry = new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, !noList);
+                            entry.RootLineNumber = RootLineNumber;
+                            output.Add(entry);
                         }
                     }
                 }
