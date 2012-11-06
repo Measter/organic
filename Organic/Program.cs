@@ -217,7 +217,10 @@ namespace Organic
             ushort currentAddress = 0;
             Stream binStream = null;
             if (outputFile != "-")
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
                 binStream = File.Open(outputFile, FileMode.Create);
+            }
             foreach (var entry in output)
             {
                 if (entry.Output != null)
@@ -246,11 +249,11 @@ namespace Organic
             if (jsonFile != null)
                 json = CreateJson(output);
 
-
             if (verbose)
                 Console.Write(listing);
             if (listingFile != null)
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(listingFile));
                 StreamWriter writer = new StreamWriter(listingFile);
                 writer.Write(listing);
                 writer.Close();
@@ -258,6 +261,7 @@ namespace Organic
 
             if (jsonFile != null)
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(jsonFile));
                 StreamWriter writer = new StreamWriter(jsonFile);
                 writer.Write(json);
                 writer.Close();
