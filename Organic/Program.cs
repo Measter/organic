@@ -11,15 +11,16 @@ namespace Organic
     public partial class Assembler
     {
         [STAThread]
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
             DateTime startTime = DateTime.Now;
+            int returnCode = 0;
 
             DisplaySplash();
             if (args.Length == 0)
             {
                 DisplayHelp();
-                return;
+                return 1;
             }
             string inputFile = null;
             string outputFile = null;
@@ -47,7 +48,7 @@ namespace Organic
                             case "/?":
                             case "--help":
                                 DisplayHelp();
-                                return;
+                                return 1;
                             case "-o":
                             case "--output":
                             case "--output-file":
@@ -62,7 +63,7 @@ namespace Organic
                                 if (!result.Successful)
                                 {
                                     Console.WriteLine("Error: " + ListEntry.GetFriendlyErrorMessage(ErrorCode.IllegalExpression));
-                                    return;
+                                    return 1;
                                 }
                                 assembler.Values.Add(args[i + 1].ToLower(), result.Value);
                                 i += 2;
@@ -94,7 +95,7 @@ namespace Organic
                                 break;
                             case "--plugins":
                                 ListPlugins(assembler);
-                                return;
+                                return 0;
                             case "--working-directory":
                             case "-w":
                                 workingDirectory = args[++i];
@@ -108,16 +109,16 @@ namespace Organic
                                 break;
                             case "--install":
                                 assembler.InstallPlugin(args[++i]);
-                                return;
+                                return 0;
                             case "--remove":
                                 assembler.RemovePlugin(args[++i]);
-                                return;
+                                return 0;
                             case "--search":
                                 assembler.SearchPlugins(args[++i]);
-                                return;
+                                return 0;
                             case "--info":
                                 assembler.GetInfo(args[++i]);
-                                return;
+                                return 0;
                             default:
                                 HandleParameterEventArgs hpea = new HandleParameterEventArgs(arg);
                                 hpea.Arguments = args;
@@ -126,20 +127,20 @@ namespace Organic
                                     assembler.TryHandleParameter(assembler, hpea);
                                 if (!hpea.Handled)
                                 {
-                                    Console.WriteLine("Error: Invalid parameter: " + arg + "\nUse orgASM.exe --help for usage information.");
-                                    return;
+                                    Console.WriteLine("Error: Invalid parameter: " + arg + "\nUse Organic.exe --help for usage information.");
+                                    return 1;
                                 }
                                 else
                                     i = hpea.Index;
                                 if (hpea.StopProgram)
-                                    return;
+                                    return 0;
                                 break;
                         }
                     }
                     catch (ArgumentOutOfRangeException)
                     {
-                        Console.WriteLine("Error: Missing argument: " + arg + "\nUse orgASM.exe --help for usage information.");
-                        return;
+                        Console.WriteLine("Error: Missing argument: " + arg + "\nUse Organic.exe --help for usage information.");
+                        return 1;
                     }
                 }
                 else
@@ -150,22 +151,22 @@ namespace Organic
                         outputFile = arg;
                     else
                     {
-                        Console.WriteLine("Error: Invalid parameter: " + arg + "\nUse orgASM.exe --help for usage information.");
-                        return;
+                        Console.WriteLine("Error: Invalid parameter: " + arg + "\nUse Organic.exe --help for usage information.");
+                        return 1;
                     }
                 }
             }
             if (inputFile == null && pipe == null)
             {
-                Console.WriteLine("Error: No input file specified.\nUse orgASM.exe --help for usage information.");
-                return;
+                Console.WriteLine("Error: No input file specified.\nUse Organic.exe --help for usage information.");
+                return 1;
             }
             if (outputFile == null)
                 outputFile = Path.GetFileNameWithoutExtension(inputFile) + ".bin";
             if (!File.Exists(inputFile) && pipe == null && inputFile != "-")
             {
                 Console.WriteLine("Error: File not found (" + inputFile + ")");
-                return;
+                return 1;
             }
 
             string contents;
@@ -202,9 +203,14 @@ namespace Organic
                 foreach (var entry in output)
                 {
                     if (entry.ErrorCode != ErrorCode.Success)
-                        Console.WriteLine("Error " + entry.FileName + " (line " + entry.LineNumber + "): " + ListEntry.GetFriendlyErrorMessage(entry.ErrorCode));
+                    {
+                        Console.Error.WriteLine("Error " + entry.FileName + " (line " + entry.LineNumber + "): " +
+                                          ListEntry.GetFriendlyErrorMessage(entry.ErrorCode));
+                        returnCode = 1;
+                    }
                     if (entry.WarningCode != WarningCode.None)
-                        Console.WriteLine("Warning " + entry.FileName + " (line " + entry.LineNumber + "): " + ListEntry.GetFriendlyWarningMessage(entry.WarningCode));
+                        Console.WriteLine("Warning " + entry.FileName + " (line " + entry.LineNumber + "): " +
+                            ListEntry.GetFriendlyWarningMessage(entry.WarningCode));
                 }
             }
 
@@ -259,6 +265,7 @@ namespace Organic
 
             TimeSpan duration = DateTime.Now - startTime;
             Console.WriteLine("Organic build complete " + duration.TotalMilliseconds + "ms");
+            return returnCode;
         }
 
         private static string CreateJson(List<ListEntry> output)
