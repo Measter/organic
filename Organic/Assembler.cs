@@ -762,7 +762,7 @@ namespace Organic
                         output[TableInsertionIndex].Output = new ushort[] { (ushort)RelocatedAddresses.Count }.Concat(RelocatedAddresses).ToArray();
                         TableInsertionIndex = -1;
                     }
-                    if (output[i].Opcode != null)
+                    if (output[i].Opcode != null && output[i].ErrorCode == ErrorCode.Success)
                     {
                         // Assemble output
                         if (output[i].CodeType == CodeType.BasicInstruction)
