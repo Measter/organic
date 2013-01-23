@@ -359,7 +359,7 @@ namespace Organic
                     else
                         tsb.WriteAt(maxLength, "[NOLIST] ");
                     tsb.WriteAt(maxLength + 25, listentry.Code);
-                    listing += tsb.Value + "\n";
+                    listing += tsb.Value + Environment.NewLine;
                     // Write data
                     for (int i = 0; i < listentry.Output.Length; i += 8)
                     {
@@ -376,7 +376,7 @@ namespace Organic
                             data += LongHex(listentry.Output[i + j]) + " ";
                         }
                         tsb.WriteAt(maxLength + 30, data.Remove(data.Length - 1));
-                        listing += tsb.Value + "\n";
+                        listing += tsb.Value + Environment.NewLine;
                     }
                 }
                 else
@@ -391,7 +391,7 @@ namespace Organic
                         else
                             tsb.WriteAt(maxLength, "[NOLIST] ");
                         tsb.WriteAt(maxLength + 8, "ERROR: " + ListEntry.GetFriendlyErrorMessage(listentry.ErrorCode));
-                        listing += tsb.Value + "\n";
+                        listing += tsb.Value + Environment.NewLine;
                     }
                     if (listentry.WarningCode != WarningCode.None)
                     {
@@ -403,7 +403,7 @@ namespace Organic
                         else
                             tsb.WriteAt(maxLength, "[NOLIST] ");
                         tsb.WriteAt(maxLength + 8, "WARNING: " + ListEntry.GetFriendlyWarningMessage(listentry.WarningCode));
-                        listing += tsb.Value + "\n";
+                        listing += tsb.Value + Environment.NewLine;
                     }
                     tsb = new TabifiedStringBuilder();
                     tsb.WriteAt(0, listentry.FileName);
@@ -422,7 +422,7 @@ namespace Organic
                     }
                     else
                         tsb.WriteAt(maxLength + 23, listentry.Code);
-                    listing += tsb.Value + "\n";
+                    listing += tsb.Value + Environment.NewLine;
                 }
             }
             return listing;
