@@ -11,3 +11,4 @@ TestResults/
 *.cache
 *.pidb
 *.userprefs
+_ReSharper*/

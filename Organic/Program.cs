@@ -218,7 +218,8 @@ namespace Organic
             Stream binStream = null;
             if (outputFile != "-")
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+                if (!string.IsNullOrEmpty(Path.GetDirectoryName(outputFile)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
                 binStream = File.Open(outputFile, FileMode.Create);
             }
             foreach (var entry in output)
