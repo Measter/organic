@@ -1,4 +1,2 @@
-﻿.org 0x1234
-global:
-.local:
-	SET A, .local + 2
+﻿#include "boilerplate.dasm"
+print_string(0, 0, "test")

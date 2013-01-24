@@ -36,6 +36,7 @@ namespace Organic
         private ushort OldAddress { get; set; }
         private int RelocationGroup { get; set; }
         public bool IsRelocating { get; set; }
+        private int UniqueScopeNumber { get; set; }
 
         /// <summary>
         /// Values (such as labels and equates) found in the code
@@ -75,7 +76,6 @@ namespace Organic
             LoadTable();
 
             Values = new Dictionary<string, ushort>();
-            //LabelValues = new Dictionary<string, ushort>();
             LabelValues = new List<Label>();
             Macros = new List<Macro>();
 
@@ -91,6 +91,8 @@ namespace Organic
 
             TableInsertionIndex = -1;
             RelocationGroup = -1;
+
+            UniqueScopeNumber = 0;
 
             LoadPlugins();
         }
@@ -230,15 +232,25 @@ namespace Organic
                         output.Add(listEntry);
                         continue;
                     }
+                    bool invalid = false;
+                    if (label.StartsWith("_"))
+                    {
+                        listEntry.ErrorCode = ErrorCode.InvalidLabel;
+                        output.Add(listEntry);
+                        continue;
+                    }
                     foreach (char c in label)
                     {
                         if (!char.IsLetterOrDigit(c) && c != '_' && c != '.')
                         {
                             listEntry.ErrorCode = ErrorCode.InvalidLabel;
                             output.Add(listEntry);
-                            continue;
+                            invalid = true;
+                            break;
                         }
                     }
+                    if (invalid)
+                        continue;
                     if (Values.ContainsKey(label.ToLower()) || LabelValues.ContainsKey(label.ToLower()))
                     {
                         listEntry.ErrorCode = ErrorCode.DuplicateName;
@@ -558,9 +570,7 @@ namespace Organic
                                 for (int j = 0; j < parameters.Length; j++)
                                 {
                                     string parameter = parameters[j].Trim();
-                                    if (parameter.StartsWith("\"") && parameter.EndsWith("\""))
-                                        parameter = parameter.Substring(1, parameter.Length - 2).Unescape();
-                                    userMacro.Args = userMacro.Args.Concat(new string[] { parameter }).ToArray();
+                                    userMacro.Args = userMacro.Args.Concat(new[] { parameter }).ToArray();
                                 }
                             }
                         }
@@ -704,7 +714,7 @@ namespace Organic
 
         private List<ListEntry> EvaluateAssembly(List<ListEntry> output)
         {
-            bool finishedAssembly = false;
+            bool finishedAssembly = false, inMacro = false;
             int iterations = 0;
             List<string> RelocatedLabels = new List<string>();
             RelocationGroup = -1;
@@ -720,6 +730,7 @@ namespace Organic
                 }
                 LineNumbers = new Stack<int>();
                 LineNumbers.Push(0);
+                UniqueScopeNumber = 0;
                 for (int i = 0; i < output.Count; i++)
                 {
                     LineNumbers.Pop();
@@ -762,6 +773,12 @@ namespace Organic
                         output[TableInsertionIndex].Output = new ushort[] { (ushort)RelocatedAddresses.Count }.Concat(RelocatedAddresses).ToArray();
                         TableInsertionIndex = -1;
                     }
+                    if (output[i].Code.ToLower() == ".uniquescope" && !inMacro)
+                        PriorGlobalLabel = "_unique" + UniqueScopeNumber++;
+                    if (output[i].Code.ToLower().StartsWith(".macro ") || output[i].Code.ToLower().StartsWith("#macro "))
+                        inMacro = true;
+                    if (output[i].Code.ToLower() == ".endmacro" || output[i].Code.ToLower() == "#endmacro")
+                        inMacro = false;
                     if (output[i].Opcode != null && output[i].ErrorCode == ErrorCode.Success)
                     {
                         // Assemble output

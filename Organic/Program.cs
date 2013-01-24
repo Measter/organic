@@ -254,16 +254,18 @@ namespace Organic
                 Console.Write(listing);
             if (listingFile != null)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(listingFile));
-                StreamWriter writer = new StreamWriter(listingFile);
+                if (!string.IsNullOrEmpty(Path.GetDirectoryName(listingFile)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(listingFile));
+                var writer = new StreamWriter(listingFile);
                 writer.Write(listing);
                 writer.Close();
             }
 
             if (jsonFile != null)
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(jsonFile));
-                StreamWriter writer = new StreamWriter(jsonFile);
+                if (!string.IsNullOrEmpty(Path.GetDirectoryName(jsonFile)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(jsonFile));
+                var writer = new StreamWriter(jsonFile);
                 writer.Write(json);
                 writer.Close();
             }
@@ -361,22 +363,25 @@ namespace Organic
                     tsb.WriteAt(maxLength + 25, listentry.Code);
                     listing += tsb.Value + Environment.NewLine;
                     // Write data
-                    for (int i = 0; i < listentry.Output.Length; i += 8)
+                    if (listentry.Output != null)
                     {
-                        tsb = new TabifiedStringBuilder();
-                        tsb.WriteAt(0, listentry.FileName);
-                        tsb.WriteAt(maxFileLength, "(line " + listentry.LineNumber + "): ");
-                        if (listentry.Listed)
-                            tsb.WriteAt(maxLength, "[0x" + LongHex((ushort)(listentry.Address + i)) + "] ");
-                        else
-                            tsb.WriteAt(maxLength, "[NOLIST] ");
-                        string data = "";
-                        for (int j = 0; j < 8 && i + j < listentry.Output.Length; j++)
+                        for (int i = 0; i < listentry.Output.Length; i += 8)
                         {
-                            data += LongHex(listentry.Output[i + j]) + " ";
+                            tsb = new TabifiedStringBuilder();
+                            tsb.WriteAt(0, listentry.FileName);
+                            tsb.WriteAt(maxFileLength, "(line " + listentry.LineNumber + "): ");
+                            if (listentry.Listed)
+                                tsb.WriteAt(maxLength, "[0x" + LongHex((ushort)(listentry.Address + i)) + "] ");
+                            else
+                                tsb.WriteAt(maxLength, "[NOLIST] ");
+                            string data = "";
+                            for (int j = 0; j < 8 && i + j < listentry.Output.Length; j++)
+                            {
+                                data += LongHex(listentry.Output[i + j]) + " ";
+                            }
+                            tsb.WriteAt(maxLength + 30, data.Remove(data.Length - 1));
+                            listing += tsb.Value + Environment.NewLine;
                         }
-                        tsb.WriteAt(maxLength + 30, data.Remove(data.Length - 1));
-                        listing += tsb.Value + Environment.NewLine;
                     }
                 }
                 else

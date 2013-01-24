@@ -118,6 +118,11 @@ namespace Organic
                         output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress));
                     }
                 }
+                else if (directive.ToLower() == "uniquescope")
+                {
+                    PriorGlobalLabel = "_unique" + UniqueScopeNumber++;
+                    output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+                }
                 else if (directive.ToLower().StartsWith("echo"))
                 {
                     if (parameters.Length == 1)
