@@ -975,11 +975,11 @@ namespace Organic
                             valueIndex = value.Length;
                         else
                         {
-                            int delimiter = value.IndexOf(',', valueIndex);
+                            int delimiter = value.SafeIndexOf(',', valueIndex);
                             if (delimiter == -1 && opcode.Value != 0x1E)
-                                delimiter = value.IndexOf('+', valueIndex);
+                                delimiter = value.SafeIndexOfParenthesis('+', valueIndex);
                             if (delimiter == -1)
-                                delimiter = value.IndexOf(']', valueIndex);
+                                delimiter = value.SafeIndexOf(']', valueIndex);
                             if (delimiter == -1)
                             {
                                 matchFound = false;
