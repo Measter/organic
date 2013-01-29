@@ -1008,6 +1008,31 @@ namespace Organic
                         match.isLiteral = true;
                         match.literal = value.Substring(valueStart, valueIndex - valueStart);
                     }
+                    else if (opcode.Key[i] == '&') // Negative literal
+                    {
+                        i++;
+                        char valID = opcode.Key[i];
+                        int valueStart = valueIndex;
+                        if (i == opcode.Key.Length - 1)
+                            valueIndex = value.Length;
+                        else
+                        {
+                            int delimiter = value.SafeIndexOf(',', valueIndex);
+                            if (delimiter == -1 && opcode.Value != 0x1E)
+                                delimiter = value.SafeIndexOfParenthesis('-', valueIndex);
+                            if (delimiter == -1)
+                                delimiter = value.SafeIndexOf(']', valueIndex);
+                            if (delimiter == -1)
+                            {
+                                matchFound = false;
+                                break;
+                            }
+                            else
+                                valueIndex = delimiter;
+                        }
+                        match.isLiteral = true;
+                        match.literal = "-(" + value.Substring(valueStart, valueIndex - valueStart) + ")";
+                    }
                     else
                     {
                         if (value.ToUpper()[valueIndex] != opcode.Key.ToUpper()[i])
