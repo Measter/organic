@@ -4,8 +4,6 @@ Organic is an assembler for the DCPU-16 architecture.  It supports version 1.7 o
 
 ## Using Organic
 
-[![Download latest version](http://i.imgur.com/cMhpN.png)](http://sircmpwn.github.com/organic/Organic.exe)
-
 On Linux, make sure that you have "mono-complete" installed, and prepend any commands to run Organic with "mono", similar to running Java programs.
 
 ### Command Line Usage
