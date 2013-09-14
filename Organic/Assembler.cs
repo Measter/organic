@@ -38,6 +38,8 @@ namespace Organic
         public bool IsRelocating { get; set; }
         private int UniqueScopeNumber { get; set; }
 
+        private List<string> IncludedFiles;
+
         /// <summary>
         /// Values (such as labels and equates) found in the code
         /// </summary>
@@ -84,6 +86,7 @@ namespace Organic
             LineNumbers = new Stack<int>();
             SuspendedLineCounts = new Stack<int>();
             FileNames = new Stack<string>();
+            IncludedFiles = new List<string>();
 
             ExpressionExtensions = new Dictionary<string, ExpressionExtension>();
             ReferencedValues = new List<string>();
@@ -298,7 +301,7 @@ namespace Organic
                         {
                             // Find included file
                             includedFileName = includedFileName.Trim('<', '>');
-                            string[] paths = IncludePath.Split(';');
+                            string[] paths = IncludePath.Split(new []{';'}, StringSplitOptions.RemoveEmptyEntries );
                             foreach (var path in paths)
                             {
                                 if (File.Exists(Path.Combine(path, includedFileName)))
@@ -312,6 +315,10 @@ namespace Organic
                         {
                             listEntry.ErrorCode = ErrorCode.FileNotFound;
                             output.Add(listEntry);
+                        }
+                        else if (IncludedFiles.Contains(includedFileName))
+                        {
+                        	
                         }
                         else
                         {
@@ -338,6 +345,7 @@ namespace Organic
                                     GetDirectory(includedFileName)));
                             FileNames.Push(includedFileName);
                             LineNumbers.Push(0);
+                            IncludedFiles.Add(includedFileName);
                             i--;
                             continue;
                         }
