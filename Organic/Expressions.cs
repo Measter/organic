@@ -223,19 +223,19 @@ namespace Organic
                 else // Defined value or error
                 {
                     if (value.StartsWith("."))
-                        value = PriorGlobalLabel.ToLower() + "_" + value.Substring(1);
-                    if (Values.ContainsKey(value.ToLower()))
-                        expressionResult.Value = Values[value.ToLower()];
-                    else if (LabelValues.ContainsKey(value.ToLower()))
+                        value = PriorGlobalLabel + "_" + value.Substring(1);
+                    if (Values.ContainsKey(value))
+                        expressionResult.Value = Values[value];
+                    else if (LabelValues.ContainsKey(value))
                     {
                         expressionResult.Relocate = true;
-                        expressionResult.Value = LabelValues.GetValue(value.ToLower());
+                        expressionResult.Value = LabelValues.GetValue(value);
                     }
                     else
                         expressionResult.Successful = false;
-                    expressionResult.References.Add(value.ToLower());
-                    if (!ReferencedValues.Contains(value.ToLower()))
-                        ReferencedValues.Add(value.ToLower());
+                    expressionResult.References.Add(value);
+                    if (!ReferencedValues.Contains(value))
+                        ReferencedValues.Add(value);
                     return expressionResult;
                 }
             }

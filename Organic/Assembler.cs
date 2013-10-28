@@ -254,7 +254,7 @@ namespace Organic
                     }
                     if (invalid)
                         continue;
-                    if (Values.ContainsKey(label.ToLower()) || LabelValues.ContainsKey(label.ToLower()))
+                    if (Values.ContainsKey(label) || LabelValues.ContainsKey(label))
                     {
                         listEntry.ErrorCode = ErrorCode.DuplicateName;
                         output.Add(listEntry);
@@ -267,7 +267,7 @@ namespace Organic
                     LabelValues.Add(new Label() 
                     {
                         LineNumber = LineNumbers.Peek(),
-                        Name = label.ToLower(),
+                        Name = label,
                         RootLineNumber = listEntry.RootLineNumber,
                         Address = currentAddress,
                     });
@@ -284,7 +284,7 @@ namespace Organic
                 {
                     line = ".equ " + line.Replace(".equ", "").TrimExcessWhitespace();
                 }
-                if (line.ToLower().StartsWith("dat"))
+                if (line.StartsWith("dat"))
                 {
                     line = "." + line;
                 }
@@ -551,7 +551,7 @@ namespace Organic
                     bool mayHaveMacro = false;
                     foreach (Macro macro in Macros)
                     {
-                        if (line.ToLower().StartsWith(macro.Name.ToLower()))
+                        if (line.StartsWith(macro.Name))
                         {
                             mayHaveMacro = true;
                             break;
@@ -585,7 +585,7 @@ namespace Organic
                         bool macroMatched = false;
                         foreach (Macro macro in Macros)
                         {
-                            if (macro.Name.ToLower() == userMacro.Name.ToLower() &&
+                            if (macro.Name == userMacro.Name &&
                                 macro.Args.Length == userMacro.Args.Length)
                             {
                                 // Expand the macro
@@ -760,32 +760,32 @@ namespace Organic
                         if (!output[i].Code.StartsWith("."))
                             PriorGlobalLabel = output[i].Code.Remove(output[i].Code.Length - 1);
                     }
-                    if (output[i].Code.ToLower() == ".longform" || output[i].Code.ToLower() == "#longform")
+                    if (output[i].Code == ".longform" || output[i].Code == "#longform")
                     {
                         ForceLongLiterals = true;
                         continue;
                     }
-                    if (output[i].Code.ToLower() == ".shortform" || output[i].Code.ToLower() == "#shortform")
+                    if (output[i].Code == ".shortform" || output[i].Code == "#shortform")
                     {
                         ForceLongLiterals = false;
                         continue;
                     }
-                    if (output[i].Code.ToLower() == ".relocate" || output[i].Code.ToLower() == "#relocate")
+                    if (output[i].Code == ".relocate" || output[i].Code == "#relocate")
                     {
                         RelocatedAddresses = new List<ushort>();
                         TableInsertionIndex = i;
                         RelocationGroup++;
                     }
-                    if (output[i].Code.ToLower() == ".endrelocate" || output[i].Code.ToLower() == "#endrelocate")
+                    if (output[i].Code == ".endrelocate" || output[i].Code == "#endrelocate")
                     {
                         output[TableInsertionIndex].Output = new ushort[] { (ushort)RelocatedAddresses.Count }.Concat(RelocatedAddresses).ToArray();
                         TableInsertionIndex = -1;
                     }
-                    if (output[i].Code.ToLower() == ".uniquescope" && !inMacro)
+                    if (output[i].Code == ".uniquescope" && !inMacro)
                         PriorGlobalLabel = "_unique" + UniqueScopeNumber++;
-                    if (output[i].Code.ToLower().StartsWith(".macro ") || output[i].Code.ToLower().StartsWith("#macro "))
+                    if (output[i].Code.StartsWith(".macro ") || output[i].Code.StartsWith("#macro "))
                         inMacro = true;
-                    if (output[i].Code.ToLower() == ".endmacro" || output[i].Code.ToLower() == "#endmacro")
+                    if (output[i].Code == ".endmacro" || output[i].Code == "#endmacro")
                         inMacro = false;
                     if (output[i].Opcode != null && output[i].ErrorCode == ErrorCode.Success)
                     {
@@ -806,7 +806,7 @@ namespace Organic
                                     foreach (var label in LabelValues.Where(l => l.RelocationGroup == RelocationGroup))
                                     {
                                         foreach (var needle in result.References)
-                                            if (needle.ToLower() == label.Name.ToLower())
+                                            if (needle == label.Name)
                                             {
                                                 relocateB = true;
                                                 break;
@@ -828,7 +828,7 @@ namespace Organic
                                     foreach (var label in LabelValues.Where(l => l.RelocationGroup == RelocationGroup))
                                     {
                                         foreach (var needle in result.References)
-                                            if (needle.ToLower() == label.Name.ToLower())
+                                            if (needle == label.Name)
                                             {
                                                 relocateA = true;
                                                 break;

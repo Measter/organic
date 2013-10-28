@@ -154,7 +154,7 @@ namespace Organic
         {
             foreach (var label in value)
             {
-                if (label.Name.ToLower() == key.ToLower())
+                if (label.Name == key)
                     return true;
             }
             return false;
@@ -164,7 +164,7 @@ namespace Organic
         {
             foreach (var label in value)
             {
-                if (label.Name.ToLower() == key.ToLower())
+                if (label.Name == key)
                     return label.Address;
             }
             return 0;
