@@ -462,7 +462,7 @@ namespace Organic
                         if (macroDefinition.Contains("("))
                         {
                             string paramDefinition = macroDefinition.Substring(macroDefinition.IndexOf("(") + 1);
-                            macro.Name = macroDefinition.Remove(macroDefinition.IndexOf("("));
+                            macro.Name = macroDefinition.Remove(macroDefinition.IndexOf("(")).Trim();
                             if (!paramDefinition.EndsWith(")"))
                             {
                                 listEntry.ErrorCode = ErrorCode.InvalidMacroDefintion;
@@ -563,7 +563,7 @@ namespace Organic
                         userMacro.Args = new string[0];
                         string macroDefinition = line;
                         string paramDefinition = macroDefinition.Substring(macroDefinition.IndexOf("(") + 1);
-                        userMacro.Name = macroDefinition.Remove(macroDefinition.IndexOf("("));
+                        userMacro.Name = macroDefinition.Remove(macroDefinition.IndexOf("(")).Trim();
                         if (!paramDefinition.EndsWith(")"))
                         {
                             listEntry.ErrorCode = ErrorCode.InvalidMacroDefintion;
