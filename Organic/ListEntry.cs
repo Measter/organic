@@ -208,5 +208,10 @@ namespace Organic
                     return Entry.ToString() + ".";
             }
         }
+
+	    public override string ToString()
+	    {
+		    return string.Format( "Code: {0}, LineNumber: {1}, RootLineNumber: {2}", Code, LineNumber, RootLineNumber );
+	    }
     }
 }
