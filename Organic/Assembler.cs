@@ -284,7 +284,7 @@ namespace Organic
                 {
                     line = ".equ " + line.Replace(".equ", "").TrimExcessWhitespace();
                 }
-                if (line.StartsWith("dat"))
+                if (line.StartsWith("dat "))
                 {
                     line = "." + line;
                 }
