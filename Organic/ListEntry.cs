@@ -10,7 +10,7 @@ namespace Organic
     /// </summary>
     public class ListEntry
     {
-        public ListEntry(string LineValue, string File, int LineNumber, ushort Address)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort Address, bool lineFromExpanded )
         {
             this.Code = LineValue;
             this.FileName = File;
@@ -20,63 +20,64 @@ namespace Organic
             this.CodeType = CodeType.BasicInstruction;
             this.PostponedExpressions = new Dictionary<ushort, string>();
             this.Tags = new Dictionary<string, object>();
+			this.IsFromExpanded = lineFromExpanded;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort Address, bool Listed)
-            : this(LineValue, File, LineNumber, Address)
+        public ListEntry( string LineValue, string File, int LineNumber, ushort Address, bool Listed, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Address, lineIsExpanded )
         {
             this.Listed = Listed;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort Address, ErrorCode ErrorCode)
-            : this(LineValue, File, LineNumber, Address)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort Address, ErrorCode ErrorCode, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Address, lineIsExpanded )
         {
             this.ErrorCode = ErrorCode;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort Address, ErrorCode ErrorCode, bool Listed)
-            : this(LineValue, File, LineNumber, Address, Listed)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort Address, ErrorCode ErrorCode, bool Listed, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Address, Listed, lineIsExpanded )
         {
             this.ErrorCode = ErrorCode;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort[] Output, ushort Address)
-            : this(LineValue, File, LineNumber, Address)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Address, lineIsExpanded )
         {
             this.Output = Output;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, bool Listed)
-            : this(LineValue, File, LineNumber, Address)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, bool Listed, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Address, lineIsExpanded )
         {
             this.Output = Output;
             this.Listed = Listed;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, bool Listed, WarningCode WarningCode)
-            : this(LineValue, File, LineNumber, Address)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, bool Listed, WarningCode WarningCode, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Address, lineIsExpanded )
         {
             this.Output = Output;
             this.Listed = Listed;
             this.WarningCode = WarningCode;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, ErrorCode ErrorCode)
-            : this(LineValue, File, LineNumber, Output, Address)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, ErrorCode ErrorCode, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Output, Address, lineIsExpanded )
         {
             this.Output = Output;
             this.ErrorCode = ErrorCode;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, ErrorCode ErrorCode, bool Listed)
-            : this(LineValue, File, LineNumber, Output, Address, Listed)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, ErrorCode ErrorCode, bool Listed, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Output, Address, Listed, lineIsExpanded )
         {
             this.Output = Output;
             this.ErrorCode = ErrorCode;
         }
 
-        public ListEntry(string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, WarningCode WarningCode)
-            : this(LineValue, File, LineNumber, Output, Address)
+		public ListEntry( string LineValue, string File, int LineNumber, ushort[] Output, ushort Address, WarningCode WarningCode, bool lineIsExpanded )
+			: this( LineValue, File, LineNumber, Output, Address, lineIsExpanded )
         {
             this.Output = Output;
             this.WarningCode = WarningCode;
@@ -118,6 +119,10 @@ namespace Organic
         /// The address this code is located at.
         /// </summary>
         public ushort Address;
+		/// <summary>
+		/// Whether the line came from a macro.
+		/// </summary>
+	    public bool IsFromExpanded;
         /// <summary>
         /// The "A" value of an interpreted instruction.
         /// </summary>

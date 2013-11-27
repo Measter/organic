@@ -148,12 +148,14 @@ namespace Organic
             LineNumbers.Push(0);
             RootLineNumber = 0;
             IfStack.Push(true);
+	        bool isFromExpanded;
 
             // Pass one
             string[] lines = code.Replace("\r", "").Split('\n');
             List<ListEntry> output = new List<ListEntry>();
             for (int i = 0; i < lines.Length; i++)
             {
+	            isFromExpanded = false;
                 if (SuspendedLineCounts.Count == 0)
                 {
                     LineNumbers.Push(LineNumbers.Pop() + 1);
@@ -161,7 +163,8 @@ namespace Organic
                 }
                 else
                 {
-                    int count = SuspendedLineCounts.Pop();
+	                isFromExpanded = true;
+					int count = SuspendedLineCounts.Pop();
                     count--;
                     if (count > 0)
                         SuspendedLineCounts.Push(count);
@@ -183,7 +186,7 @@ namespace Organic
                     SuspendedLineCounts.Push(sublines.Length);
                     continue;
                 }
-                ListEntry listEntry = new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, !noList);
+                ListEntry listEntry = new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, !noList, isFromExpanded);
                 listEntry.RootLineNumber = RootLineNumber;
                 if (HandleCodeLine != null)
                 {
@@ -527,20 +530,20 @@ namespace Organic
                         }
                         macro.Code = macro.Code.Trim('\n');
                         Macros.Add(macro);
-                        output.Add(new ListEntry(".macro " + macroDefinition, FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+                        output.Add(new ListEntry(".macro " + macroDefinition, FileNames.Peek(), LineNumbers.Peek(), currentAddress, isFromExpanded));
                         output[output.Count - 1].CodeType = CodeType.Directive;
                         foreach (var codeLine in macro.Code.Split('\n'))
                         {
-                            output.Add(new ListEntry(codeLine, FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+							output.Add( new ListEntry( codeLine, FileNames.Peek(), LineNumbers.Peek(), currentAddress, isFromExpanded ) );
                             output[output.Count - 1].CodeType = CodeType.Directive;
                         }
-                        output.Add(new ListEntry(".endmacro", FileNames.Peek(), LineNumbers.Peek(), currentAddress));
+						output.Add( new ListEntry( ".endmacro", FileNames.Peek(), LineNumbers.Peek(), currentAddress, isFromExpanded ) );
                         output[output.Count - 1].CodeType = CodeType.Directive;
                     }
                     else
                     {
                         // Parse preprocessor directives
-                        ParseDirectives(output, line);
+						ParseDirectives( output, line, isFromExpanded );
                     }
                 }
                 else
@@ -856,6 +859,7 @@ namespace Organic
                                         // if the size of the instruction has changed
                                         int lineNumber = output[i].RootLineNumber;
                                         int maxLineNumber = int.MaxValue;
+	                                    i++;
                                         for (; i < output.Count; i++)
                                         {
                                             if (output[i].Code.StartsWith(".org") || output[i].Code.StartsWith("#org"))
@@ -865,6 +869,8 @@ namespace Organic
                                             }
                                             if (output[i].RootLineNumber > lineNumber)
                                                 output[i].Address--;
+	                                        if ( output[i].RootLineNumber == lineNumber && output[i].IsFromExpanded )
+		                                        output[i].Address--;
                                         }
                                         foreach (Label l in LabelValues)
                                         {
