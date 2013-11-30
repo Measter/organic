@@ -359,13 +359,13 @@ namespace Organic
                 {
                     if (parameters.Length > 1)
                     {
-                        if (Values.ContainsKey(parameters[1].ToLower()))
+                        if (Values.ContainsKey(parameters[1]))
 							output.Add( new ListEntry( line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, ErrorCode.DuplicateName, lineFromMacro ) );
                         else
                         {
                             if (parameters.Length == 2)
                             {
-                                Values.Add(parameters[1].ToLower(), 1);
+                                Values.Add(parameters[1], 1);
                                 output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, !noList));
                             }
                             else if (parameters.Length > 2)
@@ -376,7 +376,7 @@ namespace Organic
                                 ExpressionResult value = ParseExpression(expression); // TODO: find a way to forward reference
                                 if (value != null)
                                 {
-                                    Values.Add(parameters[1].ToLower(), value.Value);
+                                    Values.Add(parameters[1], value.Value);
                                     output.Add(new ListEntry(line, FileNames.Peek(), LineNumbers.Peek(), currentAddress, !noList));
                                 }
                                 else
