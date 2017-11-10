@@ -1,0 +1,22 @@
+
+Usage:
+    Organic.exe [parameters] <input file> [output file]
+
+Options:
+    
+    -h    --help                      Displays this message.
+    -o    --output <file>             An alternative way to specify the output file.
+          --input <file>              An alternative way to specify the input file.
+    -e    --equate [key] [value]      Adds an equate, with the same syntax as .equ.
+    -l    --listing [filename]        Outputs a listing to [filename].
+          --little-endian             Switches output to little-endian mode.
+          --long-literals             Forces all literal values to take up an entire word.
+    -q    --quiet                     Organic will not output error information.
+    -p    --pipe [assembly]           Assemble [assembly], instead of the input file.
+          --json [filename]           Outputs a machine-readable JSON listing to [filename]
+    -i    --include <path>            Adds [path] to the search index for #include <> files.
+    -w    --working-directory <dir>   Change Organic's working directory.
+    -v    --verbose                   Organic will output a listing to the console.
+		  --pause					  Pause after execution.
+
+    --plugins, --install, --remove, --search, --info

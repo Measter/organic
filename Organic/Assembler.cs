@@ -99,9 +99,8 @@ namespace Organic
 
         private void LoadTable()
         {
-            StreamReader sr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("Organic.DCPUtable.txt"));
-            string[] lines = sr.ReadToEnd().Replace("\r", "").Split('\n');
-            sr.Close();
+			string[] lines = Properties.Resources.DCPUtable.Split(new[] { '\r', '\n' });
+
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i].Trim();

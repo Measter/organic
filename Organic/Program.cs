@@ -16,7 +16,8 @@ namespace Organic
 			DateTime startTime = DateTime.Now;
 			int returnCode = 0;
 
-			DisplaySplash();
+			Console.OutputEncoding = Encoding.UTF8;
+			Console.WriteLine("Organic DCPU-16 Assembler © 2017, Drew DeVault & DankParrot");
 			if (args.Length == 0)
 			{
 				DisplayHelp();
@@ -490,31 +491,12 @@ namespace Organic
 			return output.Substring(1);
 		}
 
-		private static void DisplaySplash()
-		{
-			Console.WriteLine("Organic DCPU-16 Assembler    Copyright Drew DeVault 2012");
-		}
-
 		internal static List<string> PluginHelp = new List<string>();
 
 		private static void DisplayHelp()
 		{
-			Console.WriteLine("Usage: Organic.exe [parameters] [input file] [output file]\n" +
-				"Output file is optional; if left out, Organic will use [input file].bin.\n\n" +
-				"===Flags:\n" +
-				"--equate [key] [value]: Adds an equate, with the same syntax as .equ.\n" +
-				"--help: Displays this message.\n" +
-				"--input-file [filename]: An alternative way to specify the input file.\n" +
-				"--include [path]: Adds [path] to the search index for #include <> files.\n" +
-				"--json [filename]: Outputs a machine-readable JSON listing to [filename].\n" +
-				"--listing [filename]: Outputs a listing to [filename].\n" +
-				"--little-endian: Switches output to little-endian mode.\n" +
-				"--long-literals: Forces all literal values to take up an entire word.\n" +
-				"--output-file [filename]: An alternative way to specify the output file.\n" +
-				"--pipe [assembly]: Assemble [assembly], instead of the input file.\n" +
-				"--quiet: Organic will not output error information.\n" +
-				"--verbose: Organic will output a listing to the console.\n" +
-				"--working-directory [directory]: Change Organic's working directory.");
+			Console.WriteLine(Properties.Resources.Help);
+
 			if (PluginHelp.Count != 0)
 			{
 				Console.WriteLine("\n===Plugins");
