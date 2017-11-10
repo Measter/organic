@@ -92,9 +92,6 @@
   <ItemGroup>
     <None Include="Resources\DCPUtable.txt" />
     <None Include="Resources\Help.txt" />
-    <Content Include="testSource.asm">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
